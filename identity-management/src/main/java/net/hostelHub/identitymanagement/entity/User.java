@@ -3,7 +3,7 @@ package net.hostelHub.identitymanagement.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Entity @Getter @Setter @Table(name = "users")
+@Entity @Getter @Setter @ToString @Table(name = "users")
 @AllArgsConstructor @NoArgsConstructor @Builder
 public class User {
 
