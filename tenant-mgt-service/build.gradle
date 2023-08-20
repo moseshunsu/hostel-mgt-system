@@ -11,11 +11,11 @@ java {
 	sourceCompatibility = '17'
 }
 
-//configurations {
-//	compileOnly {
-//		extendsFrom annotationProcessor
-//	}
-//}
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
 
 repositories {
 	mavenCentral()
@@ -29,15 +29,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-//    implementation 'com.google.cloud.sql:mysql-socket-factory-connector-j-8:1.13.1'
     implementation 'org.springframework.boot:spring-boot-devtools'
     implementation 'com.mysql:mysql-connector-j'
-//	implementation 'org.springframework.cloud:spring-cloud-starter-config'
-//	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 	compileOnly 'org.projectlombok:lombok'
-//	runtimeOnly 'com.mysql:mysql-connector-j'
-//	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//    implementation 'com.google.cloud.sql:mysql-socket-factory-connector-j-8:1.13.1'
+//	runtimeOnly 'com.mysql:mysql-connector-j'
 }
 
 dependencyManagement {

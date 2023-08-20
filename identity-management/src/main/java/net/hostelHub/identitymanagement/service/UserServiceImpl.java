@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .email(userRequest.getEmail())
                 .name(userRequest.getName())
-                .username(userRequest.getName())
+                .username(userRequest.getUsername())
                 .build();
 
         User saveduser = userRepository.save(user);
