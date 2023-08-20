@@ -4,10 +4,5 @@
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="gateway-server" target="17" />
-      <module name="gateway-server.main" target="17" />
-      <module name="gateway-server.test" target="17" />
-    </bytecodeTargetLevel>
   </component>
 </project>
