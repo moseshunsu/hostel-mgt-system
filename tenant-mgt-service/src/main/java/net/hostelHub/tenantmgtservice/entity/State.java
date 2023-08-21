@@ -1,5 +1,8 @@
 package net.hostelHub.tenantmgtservice.entity;
 
 public enum State {
-    LAGOS
+    LAGOS,
+    OYO,
+    OGUN,
+    OSUN
 }

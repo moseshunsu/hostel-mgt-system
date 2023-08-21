@@ -1,16 +1,17 @@
 package net.hostelHub.tenantmgtservice.service;
 
-import net.hostelHub.tenantmgtservice.dto.Data;
-import net.hostelHub.tenantmgtservice.dto.Response;
-import net.hostelHub.tenantmgtservice.dto.TenantRequest;
-import net.hostelHub.tenantmgtservice.dto.User;
+import net.hostelHub.tenantmgtservice.dto.*;
+import net.hostelHub.tenantmgtservice.entity.HostelProperty;
 import net.hostelHub.tenantmgtservice.entity.Tenant;
+import net.hostelHub.tenantmgtservice.repository.HostelPropertyRepository;
 import net.hostelHub.tenantmgtservice.repository.TenantRepository;
 import net.hostelHub.tenantmgtservice.service.client.IdentityFeignClient;
 import net.hostelHub.tenantmgtservice.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class TenantServiceImpl implements TenantService {
@@ -20,6 +21,8 @@ public class TenantServiceImpl implements TenantService {
 
     @Autowired
     IdentityFeignClient identityFeignClient;
+    @Autowired
+    private HostelPropertyRepository hostelPropertyRepository;
 
     @Override
     public ResponseEntity<Response> updateDetails(TenantRequest tenantRequest) {
@@ -79,6 +82,59 @@ public class TenantServiceImpl implements TenantService {
                                         .clientCode(savedTenant.getTenantCode())
                                         .email(savedTenant.getEmail())
                                         .username(savedTenant.getUsername())
+                                        .build()
+                        )
+                        .build()
+        );
+    }
+
+    @Override
+    public ResponseEntity<Response> registerProperty(HostelPropertyRequest hostelPropertyRequest) {
+
+        List<HostelProperty> fetchedProperties = hostelPropertyRepository.findByName(hostelPropertyRequest.getName());
+        boolean propertyExists = fetchedProperties.stream()
+                .anyMatch(hostel -> hostel.getName().equalsIgnoreCase(hostelPropertyRequest.getName()) &&
+                                    hostel.getSchool().equals(hostelPropertyRequest.getSchool())
+                );
+
+        if (propertyExists) {
+            return ResponseEntity.badRequest().body(Response.builder()
+                    .responseCode(ResponseUtils.PROPERTY_EXISTS_CODE)
+                    .responseMessage(ResponseUtils.PROPERTY_EXISTS_MESSAGE)
+                    .data(
+                            Data.builder()
+                                    .username(hostelPropertyRequest.getName())
+                                    .build()
+                    )
+                    .build()
+            );
+        }
+
+
+        HostelProperty property = new HostelProperty();
+        property.setName(hostelPropertyRequest.getName());
+        property.setSchool(hostelPropertyRequest.getSchool());
+        property.setState(hostelPropertyRequest.getState());
+        property.setAddress(hostelPropertyRequest.getAddress());
+        property.setDescription(hostelPropertyRequest.getDescription());
+        property.setTotalRooms(hostelPropertyRequest.getTotalRooms());
+        property.setContactName(hostelPropertyRequest.getContactName());
+        property.setContactEmail(hostelPropertyRequest.getContactEmail());
+        property.setContactPhone(hostelPropertyRequest.getContactPhone());
+        property.setType(hostelPropertyRequest.getType());
+        property.setTenant(tenantRepository.findByTenantCode(hostelPropertyRequest.getTenantCode()));
+
+        HostelProperty savedProperty = hostelPropertyRepository.save(property);
+
+        return ResponseEntity.ok().body(
+                Response.builder()
+                        .responseCode(ResponseUtils.SUCCESS_CODE)
+                        .responseMessage(ResponseUtils.REGISTER_PROPERTY_SUCCESS)
+                        .data(
+                                Data.builder()
+                                        .clientCode(savedProperty.getTenant().getTenantCode())
+                                        .username(savedProperty.getTenant().getUsername())
+                                        .email(savedProperty.getTenant().getEmail())
                                         .build()
                         )
                         .build()

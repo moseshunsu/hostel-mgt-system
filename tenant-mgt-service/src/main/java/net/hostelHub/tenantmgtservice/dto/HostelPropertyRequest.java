@@ -3,6 +3,7 @@ package net.hostelHub.tenantmgtservice.dto;
 import lombok.*;
 import net.hostelHub.tenantmgtservice.entity.School;
 import net.hostelHub.tenantmgtservice.entity.State;
+import net.hostelHub.tenantmgtservice.entity.Type;
 
 @Getter @Setter @Builder
 @AllArgsConstructor @NoArgsConstructor
@@ -17,5 +18,7 @@ public class HostelPropertyRequest {
     private String contactName;
     private String contactEmail;
     private String contactPhone;
+    private String tenantCode;
+    private Type type;
 
 }

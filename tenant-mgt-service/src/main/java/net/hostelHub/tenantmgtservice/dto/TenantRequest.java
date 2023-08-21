@@ -2,10 +2,6 @@ package net.hostelHub.tenantmgtservice.dto;
 
 
 import lombok.*;
-import net.hostelHub.tenantmgtservice.entity.HostelProperty;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Setter @Getter @Builder
 @AllArgsConstructor @NoArgsConstructor

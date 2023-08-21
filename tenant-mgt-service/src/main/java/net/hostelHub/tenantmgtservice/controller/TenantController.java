@@ -1,5 +1,6 @@
 package net.hostelHub.tenantmgtservice.controller;
 
+import net.hostelHub.tenantmgtservice.dto.HostelPropertyRequest;
 import net.hostelHub.tenantmgtservice.dto.Response;
 import net.hostelHub.tenantmgtservice.dto.TenantRequest;
 import net.hostelHub.tenantmgtservice.service.TenantService;
@@ -20,6 +21,11 @@ public class TenantController {
     @PostMapping
     public ResponseEntity<Response> registerDetails(@RequestBody TenantRequest tenantRequest) {
         return tenantService.updateDetails(tenantRequest);
+    }
+
+    @PostMapping("/properties")
+    public ResponseEntity<Response> registerProperty(@RequestBody HostelPropertyRequest hostelPropertyRequest) {
+        return tenantService.registerProperty(hostelPropertyRequest);
     }
 
 }
