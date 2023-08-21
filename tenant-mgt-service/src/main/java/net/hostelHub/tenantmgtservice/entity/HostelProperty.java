@@ -9,7 +9,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Setter @Getter @Table(name = "hostel_properties")
@@ -53,17 +55,11 @@ public class HostelProperty {
     @Column(name = "contact_phone")
     private String contactPhone;
 
-    @ElementCollection
-    @CollectionTable(name = "property_photos", joinColumns = @JoinColumn(name = "property_id"))
-    @MapKeyColumn(name = "photo_index")
-    @Column(name = "photo_url")
-    private Map<Name, String> photos = new HashMap<>();
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PropertyPhoto> photos = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "price_list", joinColumns = @JoinColumn(name = "property_id"))
-    @MapKeyColumn(name = "number_of_persons")
-    @Column(name = "price")
-    private Map<Integer, Double> priceList = new HashMap<>();
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PriceList> priceList = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at")

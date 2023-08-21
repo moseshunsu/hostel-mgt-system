@@ -1,8 +1,6 @@
 package net.hostelHub.tenantmgtservice.controller;
 
-import net.hostelHub.tenantmgtservice.dto.HostelPropertyRequest;
-import net.hostelHub.tenantmgtservice.dto.Response;
-import net.hostelHub.tenantmgtservice.dto.TenantRequest;
+import net.hostelHub.tenantmgtservice.dto.*;
 import net.hostelHub.tenantmgtservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,4 +26,13 @@ public class TenantController {
         return tenantService.registerProperty(hostelPropertyRequest);
     }
 
+    @PostMapping("/properties/prices")
+    public ResponseEntity<Response> addPrice(PriceListRequest priceListRequest) {
+        return tenantService.addPrice(priceListRequest);
+    }
+
+    @PostMapping("/properties/photos")
+    public ResponseEntity<Response> addPhoto(PropertyPhotoRequest propertyPhotoRequest) {
+        return tenantService.addPhoto(propertyPhotoRequest);
+    }
 }

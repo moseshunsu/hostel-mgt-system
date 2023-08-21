@@ -2,8 +2,12 @@ package net.hostelHub.tenantmgtservice.service;
 
 import net.hostelHub.tenantmgtservice.dto.*;
 import net.hostelHub.tenantmgtservice.entity.HostelProperty;
+import net.hostelHub.tenantmgtservice.entity.PriceList;
+import net.hostelHub.tenantmgtservice.entity.PropertyPhoto;
 import net.hostelHub.tenantmgtservice.entity.Tenant;
 import net.hostelHub.tenantmgtservice.repository.HostelPropertyRepository;
+import net.hostelHub.tenantmgtservice.repository.PriceListRepository;
+import net.hostelHub.tenantmgtservice.repository.PropertyPhotoRepository;
 import net.hostelHub.tenantmgtservice.repository.TenantRepository;
 import net.hostelHub.tenantmgtservice.service.client.IdentityFeignClient;
 import net.hostelHub.tenantmgtservice.utils.ResponseUtils;
@@ -23,6 +27,10 @@ public class TenantServiceImpl implements TenantService {
     IdentityFeignClient identityFeignClient;
     @Autowired
     private HostelPropertyRepository hostelPropertyRepository;
+    @Autowired
+    private PriceListRepository priceListRepository;
+    @Autowired
+    private PropertyPhotoRepository propertyPhotoRepository;
 
     @Override
     public ResponseEntity<Response> updateDetails(TenantRequest tenantRequest) {
@@ -137,6 +145,52 @@ public class TenantServiceImpl implements TenantService {
                                         .email(savedProperty.getTenant().getEmail())
                                         .build()
                         )
+                        .build()
+        );
+    }
+
+    @Override
+    public ResponseEntity<Response> addPrice(PriceListRequest priceListRequest) {
+
+        HostelProperty property = hostelPropertyRepository.findByNameAndSchool(priceListRequest.getPropertyName(),
+                priceListRequest.getSchool());
+
+        PriceList priceList = new PriceList();
+        priceList.setPropertyName(priceListRequest.getPropertyName());
+        priceList.setSchool(priceListRequest.getSchool());
+        priceList.setNumberOfPersons(priceListRequest.getNumberOfPersons());
+        priceList.setPrice(priceListRequest.getPrice());
+        priceList.setProperty(property);
+
+        PriceList savedPriceList = priceListRepository.save(priceList);
+
+        return ResponseEntity.ok().body(
+                Response.builder()
+                        .responseCode(ResponseUtils.SUCCESS_CODE)
+                        .responseMessage(ResponseUtils.PRICE_UPDATE_MESSAGE)
+                        .build()
+        );
+    }
+
+    @Override
+    public ResponseEntity<Response> addPhoto(PropertyPhotoRequest propertyPhotoRequest) {
+
+        HostelProperty property = hostelPropertyRepository.findByNameAndSchool(propertyPhotoRequest.getPropertyName(),
+                propertyPhotoRequest.getSchool());
+
+        PropertyPhoto propertyPhoto = new PropertyPhoto();
+        propertyPhoto.setPropertyName(propertyPhotoRequest.getPropertyName());
+        propertyPhoto.setSchool(propertyPhotoRequest.getSchool());
+        propertyPhoto.setPhotoUrl(propertyPhotoRequest.getPhotoUrl());
+        propertyPhoto.setDescription(propertyPhotoRequest.getDescription());
+        propertyPhoto.setProperty(property);
+
+        PropertyPhoto savedPropertyPhoto = propertyPhotoRepository.save(propertyPhoto);
+
+        return ResponseEntity.ok().body(
+                Response.builder()
+                        .responseCode(ResponseUtils.SUCCESS_CODE)
+                        .responseMessage(ResponseUtils.PHOTO_UPDATE_MESSAGE)
                         .build()
         );
     }
