@@ -1,4 +1,4 @@
-package net.hostelHub.identitymanagement.dto;
+package net.hostelHub.tenantmgtservice.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

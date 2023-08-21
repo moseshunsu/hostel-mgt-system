@@ -11,6 +11,8 @@ import java.util.List;
 @AllArgsConstructor @NoArgsConstructor
 public class TenantRequest {
 
+    private String email;
+    private String username;
     private String phoneNumber;
     private String address;
     private String city;
