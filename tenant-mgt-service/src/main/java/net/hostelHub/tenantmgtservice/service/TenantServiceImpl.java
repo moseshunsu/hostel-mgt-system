@@ -1,16 +1,13 @@
 package net.hostelHub.tenantmgtservice.service;
 
 import net.hostelHub.tenantmgtservice.dto.*;
-import net.hostelHub.tenantmgtservice.entity.HostelProperty;
-import net.hostelHub.tenantmgtservice.entity.PriceList;
-import net.hostelHub.tenantmgtservice.entity.PropertyPhoto;
-import net.hostelHub.tenantmgtservice.entity.Tenant;
+import net.hostelHub.tenantmgtservice.entity.*;
 import net.hostelHub.tenantmgtservice.repository.HostelPropertyRepository;
-import net.hostelHub.tenantmgtservice.repository.PriceListRepository;
 import net.hostelHub.tenantmgtservice.repository.PropertyPhotoRepository;
 import net.hostelHub.tenantmgtservice.repository.TenantRepository;
 import net.hostelHub.tenantmgtservice.service.client.IdentityFeignClient;
 import net.hostelHub.tenantmgtservice.utils.ResponseUtils;
+import net.hostelHub.tenantmgtservice.utils.School;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,8 +24,6 @@ public class TenantServiceImpl implements TenantService {
     IdentityFeignClient identityFeignClient;
     @Autowired
     private HostelPropertyRepository hostelPropertyRepository;
-    @Autowired
-    private PriceListRepository priceListRepository;
     @Autowired
     private PropertyPhotoRepository propertyPhotoRepository;
 
@@ -99,9 +94,10 @@ public class TenantServiceImpl implements TenantService {
     @Override
     public ResponseEntity<Response> registerProperty(HostelPropertyRequest hostelPropertyRequest) {
 
-        List<HostelProperty> fetchedProperties = hostelPropertyRepository.findByName(hostelPropertyRequest.getName());
+        List<HostelProperty> fetchedProperties =
+                hostelPropertyRepository.findByHostelName(hostelPropertyRequest.getHostelName());
         boolean propertyExists = fetchedProperties.stream()
-                .anyMatch(hostel -> hostel.getName().equalsIgnoreCase(hostelPropertyRequest.getName()) &&
+                .anyMatch(hostel -> hostel.getHostelName().equalsIgnoreCase(hostelPropertyRequest.getHostelName()) &&
                                     hostel.getSchool().equals(hostelPropertyRequest.getSchool())
                 );
 
@@ -111,7 +107,7 @@ public class TenantServiceImpl implements TenantService {
                     .responseMessage(ResponseUtils.PROPERTY_EXISTS_MESSAGE)
                     .data(
                             Data.builder()
-                                    .username(hostelPropertyRequest.getName())
+                                    .username(hostelPropertyRequest.getHostelName())
                                     .build()
                     )
                     .build()
@@ -120,7 +116,7 @@ public class TenantServiceImpl implements TenantService {
 
 
         HostelProperty property = new HostelProperty();
-        property.setName(hostelPropertyRequest.getName());
+        property.setHostelName(hostelPropertyRequest.getHostelName());
         property.setSchool(hostelPropertyRequest.getSchool());
         property.setState(hostelPropertyRequest.getState());
         property.setAddress(hostelPropertyRequest.getAddress());
@@ -150,32 +146,28 @@ public class TenantServiceImpl implements TenantService {
     }
 
     @Override
-    public ResponseEntity<Response> addPrice(PriceListRequest priceListRequest) {
+    public HostelPropertyDto fetchProperty(String hostelName, String school) {
 
-        HostelProperty property = hostelPropertyRepository.findByNameAndSchool(priceListRequest.getPropertyName(),
-                priceListRequest.getSchool());
+        HostelProperty hostelProperty =  hostelPropertyRepository.existsByHostelNameAndSchool(hostelName,
+                School.valueOf(school))
+                ? hostelPropertyRepository.findByHostelNameAndSchool(hostelName, School.valueOf(school))
+                : null;
 
-        PriceList priceList = new PriceList();
-        priceList.setPropertyName(priceListRequest.getPropertyName());
-        priceList.setSchool(priceListRequest.getSchool());
-        priceList.setNumberOfPersons(priceListRequest.getNumberOfPersons());
-        priceList.setPrice(priceListRequest.getPrice());
-        priceList.setProperty(property);
-
-        PriceList savedPriceList = priceListRepository.save(priceList);
-
-        return ResponseEntity.ok().body(
-                Response.builder()
-                        .responseCode(ResponseUtils.SUCCESS_CODE)
-                        .responseMessage(ResponseUtils.PRICE_UPDATE_MESSAGE)
-                        .build()
-        );
+        if (hostelProperty != null) {
+            return HostelPropertyDto.builder()
+                    .hostelName(hostelProperty.getHostelName())
+                    .school(String.valueOf(hostelProperty.getSchool()))
+                    .type(String.valueOf(hostelProperty.getType()))
+                    .tenantCode(hostelProperty.getTenant().getTenantCode())
+                    .build();
+        }
+        return null;
     }
 
     @Override
     public ResponseEntity<Response> addPhoto(PropertyPhotoRequest propertyPhotoRequest) {
 
-        HostelProperty property = hostelPropertyRepository.findByNameAndSchool(propertyPhotoRequest.getPropertyName(),
+        HostelProperty property = hostelPropertyRepository.findByHostelNameAndSchool(propertyPhotoRequest.getPropertyName(),
                 propertyPhotoRequest.getSchool());
 
         PropertyPhoto propertyPhoto = new PropertyPhoto();

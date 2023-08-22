@@ -1,4 +1,4 @@
-package net.hostelHub.tenantmgtservice.entity;
+package net.hostelHub.tenantmgtservice.utils;
 
 public enum Type {
     MALE,

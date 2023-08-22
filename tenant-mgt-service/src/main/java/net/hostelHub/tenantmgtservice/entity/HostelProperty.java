@@ -1,18 +1,20 @@
 package net.hostelHub.tenantmgtservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.hostelHub.tenantmgtservice.utils.School;
+import net.hostelHub.tenantmgtservice.utils.State;
+import net.hostelHub.tenantmgtservice.utils.Type;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Setter @Getter @Table(name = "hostel_properties")
 @AllArgsConstructor @NoArgsConstructor @Entity
@@ -23,7 +25,7 @@ public class HostelProperty {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String hostelName;
 
     @Enumerated(EnumType.STRING)
     private School school;
@@ -34,8 +36,9 @@ public class HostelProperty {
     @Enumerated(EnumType.STRING)
     private State state;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY )
     @JoinColumn(name = "tenant_code", referencedColumnName = "tenant_code" , nullable = false)
+    @JsonIgnore
     private Tenant tenant;
 
     @Column(nullable = false)
@@ -57,9 +60,6 @@ public class HostelProperty {
 
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PropertyPhoto> photos = new ArrayList<>();
-
-    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PriceList> priceList = new ArrayList<>();
 
     @CreationTimestamp
     @Column(name = "created_at")

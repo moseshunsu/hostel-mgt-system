@@ -6,6 +6,6 @@ import org.springframework.http.ResponseEntity;
 public interface TenantService {
     ResponseEntity<Response> updateDetails(TenantRequest tenantRequest);
     ResponseEntity<Response> registerProperty(HostelPropertyRequest hostelPropertyRequest);
-    ResponseEntity<Response> addPrice(PriceListRequest priceListRequest);
+    HostelPropertyDto fetchProperty(String hostelName,String school);
     ResponseEntity<Response> addPhoto(PropertyPhotoRequest propertyPhotoRequest);
 }

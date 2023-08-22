@@ -4,10 +4,7 @@ import net.hostelHub.tenantmgtservice.dto.*;
 import net.hostelHub.tenantmgtservice.service.TenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/tenants")
@@ -26,9 +23,9 @@ public class TenantController {
         return tenantService.registerProperty(hostelPropertyRequest);
     }
 
-    @PostMapping("/properties/prices")
-    public ResponseEntity<Response> addPrice(PriceListRequest priceListRequest) {
-        return tenantService.addPrice(priceListRequest);
+    @GetMapping("/properties")
+    public HostelPropertyDto fetchProperty(@RequestParam String hostelName, @RequestParam String school) {
+        return tenantService.fetchProperty(hostelName, school);
     }
 
     @PostMapping("/properties/photos")

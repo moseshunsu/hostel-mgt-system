@@ -1,7 +1,9 @@
 package net.hostelHub.tenantmgtservice.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import net.hostelHub.tenantmgtservice.utils.School;
 
 @Getter @Setter @Entity @Table(name = "property_photos")
 @AllArgsConstructor @NoArgsConstructor
@@ -21,8 +23,9 @@ public class PropertyPhoto {
 
     private String description;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "property_id", referencedColumnName = "id")
+    @JsonIgnore
     private HostelProperty property;
 
 }
