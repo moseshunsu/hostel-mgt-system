@@ -96,6 +96,7 @@ public class TenantServiceImpl implements TenantService {
 
         List<HostelProperty> fetchedProperties =
                 hostelPropertyRepository.findByHostelName(hostelPropertyRequest.getHostelName());
+
         boolean propertyExists = fetchedProperties.stream()
                 .anyMatch(hostel -> hostel.getHostelName().equalsIgnoreCase(hostelPropertyRequest.getHostelName()) &&
                                     hostel.getSchool().equals(hostelPropertyRequest.getSchool())
