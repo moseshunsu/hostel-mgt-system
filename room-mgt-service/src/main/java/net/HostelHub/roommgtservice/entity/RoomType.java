@@ -28,8 +28,6 @@ public class RoomType {
 
     private Double pricePerBed;
 
-//    private int totalNumberOfBeds;
-
     private String description;
 
 }

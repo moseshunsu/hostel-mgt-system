@@ -1,6 +1,5 @@
 package net.HostelHub.roommgtservice.service;
 
-import lombok.extern.slf4j.Slf4j;
 import net.HostelHub.roommgtservice.dto.*;
 import net.HostelHub.roommgtservice.entity.Room;
 import net.HostelHub.roommgtservice.entity.RoomStatus;
@@ -9,11 +8,11 @@ import net.HostelHub.roommgtservice.roomRepository.RoomRepository;
 import net.HostelHub.roommgtservice.roomRepository.RoomTypeRepository;
 import net.HostelHub.roommgtservice.service.client.TenantFeignClient;
 import net.HostelHub.roommgtservice.utils.ResponseUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class RoomServiceImpl implements RoomService{
@@ -111,4 +110,35 @@ public class RoomServiceImpl implements RoomService{
                         .build()
         );
     }
+
+    @Override
+    public ResponseEntity<RoomDto> fetchRoomDetails(String schoolName, String hostelName, int numberInARoom) {
+        boolean isRoomTypeExists = roomTypeRepository.existsByHostelNameAndNumberInARoomAndSchoolName(hostelName,
+                numberInARoom, schoolName);
+
+        RoomType roomType = isRoomTypeExists ?
+                        roomTypeRepository.findByHostelNameAndNumberInARoomAndSchoolName(hostelName, numberInARoom,
+                                schoolName)
+                        : null;
+
+        if (!isRoomTypeExists) return ResponseEntity.badRequest().body(null);
+
+        return ResponseEntity.ok(
+                RoomDto.builder()
+                        .hostelName(roomType.getHostelName())
+                        .schoolName(roomType.getSchoolName())
+                        .tenantCode(roomType.getTenantCode())
+                        .pricePerBed(roomType.getPricePerBed())
+                        .description(roomType.getDescription())
+                        .build()
+        );
+    }
+
+    @Override
+    public ResponseEntity<List<Room>> fetchAvailableRooms(String schoolName, String hostelName) {
+        return ResponseEntity.ok().body(roomRepository.findByRoomType_HostelNameAndRoomType_SchoolName(schoolName,
+                hostelName));
+
+    }
+
 }

@@ -1,15 +1,16 @@
 package net.HostelHub.roommgtservice.controller;
 
 import net.HostelHub.roommgtservice.dto.Response;
+import net.HostelHub.roommgtservice.dto.RoomDto;
 import net.HostelHub.roommgtservice.dto.RoomRequest;
 import net.HostelHub.roommgtservice.dto.RoomTypeRequest;
+import net.HostelHub.roommgtservice.entity.Room;
 import net.HostelHub.roommgtservice.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/rooms")
@@ -27,5 +28,15 @@ public class RoomController {
     public ResponseEntity<Response> addRoom(@RequestBody RoomRequest roomRequest) {
         return roomService.addRoom(roomRequest);
     }
+    @GetMapping("/room")
+    public ResponseEntity<RoomDto> fetchRoomDetails(@RequestParam String schoolName, @RequestParam String hostelName,
+                                                    @RequestParam int numberInARoom) {
+        return roomService.fetchRoomDetails(schoolName, hostelName, numberInARoom);
+    }
 
+    @GetMapping
+    public ResponseEntity<List<Room>> fetchAvailableRooms(@RequestParam String schoolName,
+                                                          @RequestParam String hostelName) {
+        return roomService.fetchAvailableRooms(schoolName, hostelName);
+    }
 }
