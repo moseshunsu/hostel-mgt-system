@@ -1,7 +1,7 @@
 package net.HostelHub.roommgtservice.controller;
 
 import net.HostelHub.roommgtservice.dto.Response;
-import net.HostelHub.roommgtservice.dto.RoomDto;
+import net.HostelHub.roommgtservice.dto.RoomResponseDto;
 import net.HostelHub.roommgtservice.dto.RoomRequest;
 import net.HostelHub.roommgtservice.dto.RoomTypeRequest;
 import net.HostelHub.roommgtservice.entity.Room;
@@ -29,8 +29,9 @@ public class RoomController {
         return roomService.addRoom(roomRequest);
     }
     @GetMapping("/room")
-    public ResponseEntity<RoomDto> fetchRoomDetails(@RequestParam String schoolName, @RequestParam String hostelName,
-                                                    @RequestParam int numberInARoom) {
+    public ResponseEntity<RoomResponseDto> fetchRoomDetails(@RequestParam String schoolName,
+                                                            @RequestParam String hostelName,
+                                                            @RequestParam int numberInARoom) {
         return roomService.fetchRoomDetails(schoolName, hostelName, numberInARoom);
     }
 

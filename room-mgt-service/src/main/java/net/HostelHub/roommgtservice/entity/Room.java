@@ -25,6 +25,6 @@ public class Room {
     private int bedAvailable; // This indicates the number of beds available and increases based on booking
 
     @Enumerated(EnumType.STRING)
-    private RoomStatus status;
+    private RoomStatus roomStatus;
 
 }

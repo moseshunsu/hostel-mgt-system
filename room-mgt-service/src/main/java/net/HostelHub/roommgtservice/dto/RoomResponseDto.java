@@ -5,7 +5,7 @@ import lombok.Data;
 import net.HostelHub.roommgtservice.entity.Room;
 
 @Builder @Data
-public class RoomDto {
+public class RoomResponseDto {
     private String hostelName;
     private String schoolName;
     private String tenantCode;

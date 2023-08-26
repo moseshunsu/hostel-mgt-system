@@ -11,6 +11,6 @@ public class RoomRequest {
     private int numberInARoom;
     private String schoolName;
     private Sex sex;
-    private String status;
+    private String roomStatus;
 
 }

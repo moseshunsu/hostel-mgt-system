@@ -87,10 +87,10 @@ public class RoomServiceImpl implements RoomService{
         room.setRoomNumber(roomRequest.getRoomNumber());
         room.setRoomType(roomTypeRepository.findByHostelNameAndNumberInARoomAndSchoolName(roomRequest.getHostelName(),
                 roomRequest.getNumberInARoom(), roomRequest.getSchoolName()));
-        room.setStatus(RoomStatus.valueOf(roomRequest.getStatus()));
+        room.setRoomStatus(RoomStatus.valueOf(roomRequest.getRoomStatus()));
         room.setSex(roomRequest.getSex());
 
-        if (roomRequest.getStatus().equals("MAINTENANCE")) {
+        if (roomRequest.getRoomStatus().equals("MAINTENANCE")) {
             room.setBedAvailable(0);
         } else room.setBedAvailable(room.getRoomType().getNumberInARoom());
 
@@ -112,7 +112,7 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
-    public ResponseEntity<RoomDto> fetchRoomDetails(String schoolName, String hostelName, int numberInARoom) {
+    public ResponseEntity<RoomResponseDto> fetchRoomDetails(String schoolName, String hostelName, int numberInARoom) {
         boolean isRoomTypeExists = roomTypeRepository.existsByHostelNameAndNumberInARoomAndSchoolName(hostelName,
                 numberInARoom, schoolName);
 
@@ -124,7 +124,7 @@ public class RoomServiceImpl implements RoomService{
         if (!isRoomTypeExists) return ResponseEntity.badRequest().body(null);
 
         return ResponseEntity.ok(
-                RoomDto.builder()
+                RoomResponseDto.builder()
                         .hostelName(roomType.getHostelName())
                         .schoolName(roomType.getSchoolName())
                         .tenantCode(roomType.getTenantCode())
@@ -136,8 +136,13 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public ResponseEntity<List<Room>> fetchAvailableRooms(String schoolName, String hostelName) {
-        return ResponseEntity.ok().body(roomRepository.findByRoomType_HostelNameAndRoomType_SchoolName(schoolName,
-                hostelName));
+
+        List<Room> rooms = roomRepository.findAll().stream().filter(
+                room -> room.getRoomType().getHostelName().equals(hostelName) &&
+                        room.getRoomType().getSchoolName().equals(schoolName) &&
+                        room.getRoomStatus().equals(RoomStatus.AVAILABLE)
+        ).toList();
+        return ResponseEntity.ok().body(rooms);
 
     }
 
