@@ -1,4 +1,4 @@
-package net.HostelHub.roommgtservice.dto;
+package net.hostelHub.bookingreservationservice.dto;
 
 import lombok.Builder;
 import lombok.Data;

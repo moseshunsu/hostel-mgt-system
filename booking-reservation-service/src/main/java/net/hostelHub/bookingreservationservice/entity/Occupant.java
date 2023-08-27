@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter
-@Entity @Table(name = "students")
+@Entity @Table(name = "occupants")
 @NoArgsConstructor @AllArgsConstructor
 public class Occupant {
 

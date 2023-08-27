@@ -1,4 +1,4 @@
-package net.hostelHub.bookingreservationservice.entity;
+package net.hostelHub.bookingreservationservice.utils;
 
 public enum State {
     LAGOS,

@@ -6,13 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.hostelHub.bookingreservationservice.utils.State;
+import net.hostelHub.bookingreservationservice.utils.Status;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
 @Setter @Getter @Table(name = "bookings")
-@AllArgsConstructor @NoArgsConstructor
+@Entity @AllArgsConstructor @NoArgsConstructor
 public class Booking {
 
     @Id

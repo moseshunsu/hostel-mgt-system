@@ -36,8 +36,8 @@ public class RoomController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Room>> fetchAvailableRooms(@RequestParam String schoolName,
-                                                          @RequestParam String hostelName) {
+    public ResponseEntity<List<RoomResponseDto>> fetchAvailableRooms(@RequestParam String schoolName,
+                                                                    @RequestParam String hostelName) {
         return roomService.fetchAvailableRooms(schoolName, hostelName);
     }
 }

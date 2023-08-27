@@ -134,14 +134,28 @@ public class RoomServiceImpl implements RoomService{
         );
     }
 
+    // This allows occupants search for available rooms in a particular school
     @Override
-    public ResponseEntity<List<Room>> fetchAvailableRooms(String schoolName, String hostelName) {
+    public ResponseEntity<List<RoomResponseDto>> fetchAvailableRooms(String schoolName, String hostelName) {
 
-        List<Room> rooms = roomRepository.findAll().stream().filter(
+        List<RoomResponseDto> rooms = roomRepository.findAll().stream().filter(
                 room -> room.getRoomType().getHostelName().equals(hostelName) &&
                         room.getRoomType().getSchoolName().equals(schoolName) &&
                         room.getRoomStatus().equals(RoomStatus.AVAILABLE)
+        ).map(
+                room -> RoomResponseDto.builder()
+                        .hostelName(room.getRoomType().getHostelName())
+                        .schoolName(room.getRoomType().getSchoolName())
+                        .tenantCode(room.getRoomType().getTenantCode())
+                        .pricePerBed(room.getRoomType().getPricePerBed())
+                        .description(room.getRoomType().getDescription())
+                        .roomNumber(room.getRoomNumber())
+                        .sex(String.valueOf(room.getSex()))
+                        .numberInARoom(room.getRoomType().getNumberInARoom())
+                        .bedAvailable(room.getBedAvailable())
+                        .build()
         ).toList();
+
         return ResponseEntity.ok().body(rooms);
 
     }

@@ -2,7 +2,7 @@ package net.hostelHub.bookingreservationservice.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import net.hostelHub.bookingreservationservice.entity.State;
+import net.hostelHub.bookingreservationservice.utils.State;
 
 @Data @Builder
 public class BookingRequest {

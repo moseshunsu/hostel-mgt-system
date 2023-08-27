@@ -1,17 +1,18 @@
 package net.hostelHub.bookingreservationservice.service.impl;
 
-import net.hostelHub.bookingreservationservice.dto.BookingRequest;
-import net.hostelHub.bookingreservationservice.dto.Data;
-import net.hostelHub.bookingreservationservice.dto.Response;
+import net.hostelHub.bookingreservationservice.dto.*;
 import net.hostelHub.bookingreservationservice.entity.Booking;
-import net.hostelHub.bookingreservationservice.entity.Status;
+import net.hostelHub.bookingreservationservice.utils.Status;
 import net.hostelHub.bookingreservationservice.repository.BookingRepository;
 import net.hostelHub.bookingreservationservice.repository.OccupantRepository;
 import net.hostelHub.bookingreservationservice.service.BookingService;
+import net.hostelHub.bookingreservationservice.service.client.RoomFeignClient;
 import net.hostelHub.bookingreservationservice.utils.ResponseUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -20,8 +21,8 @@ public class BookingServiceImpl implements BookingService {
     private OccupantRepository occupantRepository;
     @Autowired
     private BookingRepository bookingRepository;
-
-    // Add a search class to get fetch hostel details
+    @Autowired
+    private RoomFeignClient roomFeignClient;
 
     @Override
     public ResponseEntity<Response> makeBooking(BookingRequest bookingRequest) {
@@ -52,6 +53,13 @@ public class BookingServiceImpl implements BookingService {
                         )
                         .build()
         );
+    }
+
+
+    // This allows occupants search for available rooms in a particular school
+    @Override
+    public ResponseEntity<List<RoomResponseDto>> fetchAvailableRooms(SchoolRequest schoolRequest) {
+        return roomFeignClient.fetchAvailableRooms(schoolRequest.getSchoolName(), schoolRequest.getHostelName());
     }
 
 }

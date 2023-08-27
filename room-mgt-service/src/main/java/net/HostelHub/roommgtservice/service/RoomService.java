@@ -14,6 +14,6 @@ public interface RoomService {
     ResponseEntity<Response> addRoomType(RoomTypeRequest roomTypeRequest);
     ResponseEntity<Response> addRoom(RoomRequest roomRequest);
     ResponseEntity<RoomResponseDto> fetchRoomDetails(String schoolName, String hostelName, int numberInARoom);
-    ResponseEntity<List<Room>> fetchAvailableRooms(String schoolName, String hostelName);
+    ResponseEntity<List<RoomResponseDto>> fetchAvailableRooms(String schoolName, String hostelName);
 
 }
