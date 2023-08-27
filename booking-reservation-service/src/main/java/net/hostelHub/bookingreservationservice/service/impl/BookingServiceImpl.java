@@ -26,35 +26,53 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public ResponseEntity<Response> makeBooking(BookingRequest bookingRequest) {
-        boolean isOccupantExists = occupantRepository.existsByOccupantCode(bookingRequest.getOccupantCode());
+        ResponseEntity<RoomResponseDto> fetchedRoomDetails =
+                roomFeignClient.fetchRoomDetails(bookingRequest.getSchoolName(),
+                        bookingRequest.getHostelName(), bookingRequest.getRoomNumber());
 
-        Booking booking = new Booking();
-        booking.setHostelName(bookingRequest.getHostelName());
-        booking.setSchool(bookingRequest.getSchool());
-        booking.setState(bookingRequest.getState());
-        booking.setOccupant(occupantRepository.findByOccupantCode(bookingRequest.getOccupantCode()));
-        booking.setAcademicYear(bookingRequest.getAcademicYear());
-        booking.setRoomNumber(bookingRequest.getRoomNumber());
-        booking.setPrice(bookingRequest.getPrice());
-        booking.setStatus(Status.PENDING);
+        RoomResponseDto fetchedRoomDetailsBody = fetchedRoomDetails.getBody();
 
-        Booking savedbooking = bookingRepository.save(booking);
+//        boolean isOccupantExists = occupantRepository.existsByOccupantCode(bookingRequest.getOccupantCode());
 
-        return ResponseEntity.ok().body(
+        if (fetchedRoomDetailsBody != null) {
+            Booking booking = new Booking();
+            booking.setHostelName(fetchedRoomDetailsBody.getHostelName());
+            booking.setSchool(fetchedRoomDetailsBody.getSchoolName());
+            booking.setTenantCode(fetchedRoomDetailsBody.getTenantCode());
+            booking.setOccupant(occupantRepository.findByOccupantCode(bookingRequest.getOccupantCode()));
+            booking.setAcademicYear(bookingRequest.getAcademicYear());
+            booking.setRoomNumber(fetchedRoomDetailsBody.getRoomNumber());
+            booking.setPrice(fetchedRoomDetailsBody.getPricePerBed());
+            booking.setStatus(Status.PENDING);
+
+            Booking savedbooking = bookingRepository.save(booking);
+
+            return ResponseEntity.ok().body(
+                    Response.builder()
+                            .responseCode(ResponseUtils.SUCCESS_CODE)
+                            .responseMessage(ResponseUtils.BOOKING_SUCCESS_MESSAGE)
+                            .data(
+                                    Data.builder()
+                                            .roomNumber(savedbooking.getRoomNumber())
+                                            .occupantCode(savedbooking.getOccupant().getOccupantCode())
+                                            .email(savedbooking.getOccupant().getEmail())
+                                            .build()
+                            )
+                            .build()
+            );
+        } else  return ResponseEntity.badRequest().body(
                 Response.builder()
-                        .responseCode(ResponseUtils.SUCCESS_CODE)
-                        .responseMessage(ResponseUtils.BOOKING_SUCCESS_MESSAGE)
+                        .responseCode(ResponseUtils.ROOM_NOT_FOUND_CODE)
+                        .responseMessage(ResponseUtils.ROOM_NOT_FOUND_MESSAGE)
                         .data(
                                 Data.builder()
-                                        .roomNumber(savedbooking.getRoomNumber())
-                                        .occupantCode(savedbooking.getOccupant().getOccupantCode())
-                                        .email(savedbooking.getOccupant().getEmail())
+                                        .roomNumber(bookingRequest.getOccupantCode())
+                                        .roomNumber(bookingRequest.getRoomNumber())
                                         .build()
                         )
                         .build()
         );
     }
-
 
     // This allows occupants search for available rooms in a particular school
     @Override

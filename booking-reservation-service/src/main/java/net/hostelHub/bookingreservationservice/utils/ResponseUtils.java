@@ -29,6 +29,8 @@ public class ResponseUtils {
     public static final String OCCUPANT_EXISTS_MESSAGE = "Occupant already exist";
     public static final String BOOKING_SUCCESS_MESSAGE = "Congrats, room successfully booked pending approval from " +
             "hostel admin after successful payment";
+    public static final String ROOM_NOT_FOUND_CODE = "007";
+    public static final String ROOM_NOT_FOUND_MESSAGE = "Room not found";
 
     public static String generateOccupantCode(int length) {
         String clientCode = "";

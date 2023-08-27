@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RoomServiceImpl implements RoomService{
@@ -112,26 +113,35 @@ public class RoomServiceImpl implements RoomService{
     }
 
     @Override
-    public ResponseEntity<RoomResponseDto> fetchRoomDetails(String schoolName, String hostelName, int numberInARoom) {
-        boolean isRoomTypeExists = roomTypeRepository.existsByHostelNameAndNumberInARoomAndSchoolName(hostelName,
-                numberInARoom, schoolName);
+    public ResponseEntity<RoomResponseDto> fetchRoomDetails(String schoolName, String hostelName, String roomNumber) {
 
-        RoomType roomType = isRoomTypeExists ?
-                        roomTypeRepository.findByHostelNameAndNumberInARoomAndSchoolName(hostelName, numberInARoom,
-                                schoolName)
-                        : null;
+        Optional<Room> roomOptional = roomRepository.findAll().stream()
+                .filter(room ->
+                                room.getRoomType().getHostelName().equals(hostelName) &&
+                                room.getRoomType().getSchoolName().equals(schoolName) &&
+                                room.getRoomNumber().equals(roomNumber)
+                )
+                .findFirst();
 
-        if (!isRoomTypeExists) return ResponseEntity.badRequest().body(null);
+        if (roomOptional.isPresent()) {
+            Room room = roomOptional.get();
+            RoomResponseDto roomDetails = RoomResponseDto.builder()
+                    .hostelName(room.getRoomType().getHostelName())
+                    .schoolName(room.getRoomType().getSchoolName())
+                    .tenantCode(room.getRoomType().getTenantCode())
+                    .pricePerBed(room.getRoomType().getPricePerBed())
+                    .description(room.getRoomType().getDescription())
+                    .roomNumber(room.getRoomNumber())
+                    .sex(String.valueOf(room.getSex()))
+                    .numberInARoom(room.getRoomType().getNumberInARoom())
+                    .bedAvailable(room.getBedAvailable())
+                    .build();
 
-        return ResponseEntity.ok(
-                RoomResponseDto.builder()
-                        .hostelName(roomType.getHostelName())
-                        .schoolName(roomType.getSchoolName())
-                        .tenantCode(roomType.getTenantCode())
-                        .pricePerBed(roomType.getPricePerBed())
-                        .description(roomType.getDescription())
-                        .build()
-        );
+            return ResponseEntity.ok().body(roomDetails);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     // This allows occupants search for available rooms in a particular school

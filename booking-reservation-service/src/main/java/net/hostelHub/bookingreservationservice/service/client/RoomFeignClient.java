@@ -14,4 +14,9 @@ public interface RoomFeignClient {
     ResponseEntity<List<RoomResponseDto>> fetchAvailableRooms(@RequestParam String schoolName,
                                                               @RequestParam String hostelName);
 
+    @GetMapping("api/v1/rooms/room")
+    ResponseEntity<RoomResponseDto> fetchRoomDetails(@RequestParam String schoolName,
+                                                     @RequestParam String hostelName,
+                                                     @RequestParam String roomNumber);
+
 }

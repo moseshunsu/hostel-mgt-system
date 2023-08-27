@@ -13,7 +13,7 @@ public interface RoomService {
 
     ResponseEntity<Response> addRoomType(RoomTypeRequest roomTypeRequest);
     ResponseEntity<Response> addRoom(RoomRequest roomRequest);
-    ResponseEntity<RoomResponseDto> fetchRoomDetails(String schoolName, String hostelName, int numberInARoom);
+    ResponseEntity<RoomResponseDto> fetchRoomDetails(String schoolName, String hostelName, String roomNumber);
     ResponseEntity<List<RoomResponseDto>> fetchAvailableRooms(String schoolName, String hostelName);
 
 }

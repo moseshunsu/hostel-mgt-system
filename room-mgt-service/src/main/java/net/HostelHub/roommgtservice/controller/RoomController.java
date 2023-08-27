@@ -28,11 +28,12 @@ public class RoomController {
     public ResponseEntity<Response> addRoom(@RequestBody RoomRequest roomRequest) {
         return roomService.addRoom(roomRequest);
     }
+
     @GetMapping("/room")
     public ResponseEntity<RoomResponseDto> fetchRoomDetails(@RequestParam String schoolName,
                                                             @RequestParam String hostelName,
-                                                            @RequestParam int numberInARoom) {
-        return roomService.fetchRoomDetails(schoolName, hostelName, numberInARoom);
+                                                            @RequestParam String roomNumber) {
+        return roomService.fetchRoomDetails(schoolName, hostelName, roomNumber);
     }
 
     @GetMapping

@@ -25,6 +25,9 @@ public class Booking {
     private String hostelName;
 
     @Column(nullable = false)
+    private String tenantCode;
+
+    @Column(nullable = false)
     private String school;
 
     @Enumerated(EnumType.STRING)

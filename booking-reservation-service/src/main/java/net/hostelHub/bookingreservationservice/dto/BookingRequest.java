@@ -7,11 +7,8 @@ import net.hostelHub.bookingreservationservice.utils.State;
 @Data @Builder
 public class BookingRequest {
     private String hostelName;
-    private String school;
-    private State state;
+    private String schoolName;
     private String occupantCode;
     private String academicYear;
     private String roomNumber;
-    private Double price;
-    private String status;
 }

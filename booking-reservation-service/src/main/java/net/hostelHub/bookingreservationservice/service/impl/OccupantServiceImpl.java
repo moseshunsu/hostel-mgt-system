@@ -26,7 +26,12 @@ public class OccupantServiceImpl implements OccupantService {
         boolean isOccupantExists = occupantRepository.existsByEmailAndUsername(occupantRequest.getEmail(),
                 occupantRequest.getPhoneNumber());
 
-        if (isOccupantExists) {
+        boolean i = occupantRepository.findAll().stream().anyMatch(
+                occupant -> occupant.getEmail().equals(occupantRequest.getEmail()) &&
+                            occupant.getUsername().equals(occupantRequest.getUsername())
+        );
+
+        if (i) {
             return ResponseEntity.badRequest().body(
                     Response.builder()
                             .responseCode(ResponseUtils.OCCUPANT_EXISTS_CODE)
@@ -48,7 +53,7 @@ public class OccupantServiceImpl implements OccupantService {
         occupant.setEmail(fetchedUser.getEmail());
         occupant.setName(fetchedUser.getName());
         occupant.setUsername(fetchedUser.getUsername());
-        occupant.setPhoneNumber(occupant.getPhoneNumber());
+        occupant.setPhoneNumber(occupantRequest.getPhoneNumber());
 
         Occupant savedOccupant = occupantRepository.save(occupant);
 
