@@ -1,7 +1,9 @@
 package net.hostelHub.bookingreservationservice.service.impl;
 
 import net.hostelHub.bookingreservationservice.dto.*;
+import net.hostelHub.bookingreservationservice.dto.EmailDetails;
 import net.hostelHub.bookingreservationservice.entity.Booking;
+import net.hostelHub.bookingreservationservice.rabbitmq.publisher.RabbitMQJsonProducer;
 import net.hostelHub.bookingreservationservice.utils.Status;
 import net.hostelHub.bookingreservationservice.repository.BookingRepository;
 import net.hostelHub.bookingreservationservice.repository.OccupantRepository;
@@ -23,6 +25,8 @@ public class BookingServiceImpl implements BookingService {
     private BookingRepository bookingRepository;
     @Autowired
     private RoomFeignClient roomFeignClient;
+    @Autowired
+    RabbitMQJsonProducer jsonProducer;
 
     @Override
     public ResponseEntity<Response> makeBooking(BookingRequest bookingRequest) {
@@ -46,6 +50,14 @@ public class BookingServiceImpl implements BookingService {
             booking.setStatus(Status.PENDING);
 
             Booking savedbooking = bookingRepository.save(booking);
+
+            EmailDetails emailDetails = EmailDetails.builder()
+                    .subject("SUCCESSFUL BOOKING")
+                    .recipient("moses.hunsu@yahoo.com")
+                    .messageBody("Booking successful, pending payment and approval from admin!")
+                    .build();
+
+            jsonProducer.sendJsonMessage(emailDetails);
 
             return ResponseEntity.ok().body(
                     Response.builder()
